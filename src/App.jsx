@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { AuthProvider } from './contexts/AuthContext'
 import Hero from './components/Hero'
@@ -80,15 +80,13 @@ function LandingPage() {
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/demo/:slug" element={<DemoPage />} />
-          <Route path="/i/:invitationSlug" element={<InvitationPage />} />
-          <Route path="/dashboard/:invitationId" element={<HostDashboard />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Router>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/demo/:slug" element={<DemoPage />} />
+        <Route path="/i/:invitationSlug" element={<InvitationPage />} />
+        <Route path="/dashboard/:invitationId" element={<HostDashboard />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </AuthProvider>
   )
 }
