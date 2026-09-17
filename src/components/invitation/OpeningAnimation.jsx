@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Volume2, VolumeX, Globe, Music, MusicOff } from 'lucide-react'
+import { Volume2, VolumeX, Globe, Music, Volume1 } from 'lucide-react'
 import { useLanguage } from '../../contexts/LanguageContext'
 
 const OpeningAnimation = ({ onOpen, invitation }) => {
@@ -122,7 +122,7 @@ const OpeningAnimation = ({ onOpen, invitation }) => {
                 boxShadow: '0 4px 15px rgba(0, 0, 0, 0.08)'
               }}
             >
-              {isMuted ? <MusicOff className="w-5 h-5" /> : <Music className="w-5 h-5" />}
+              {isMuted ? <Volume1 className="w-5 h-5" /> : <Music className="w-5 h-5" />}
             </motion.button>
             
             {/* Envelope */}
