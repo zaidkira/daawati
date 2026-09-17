@@ -93,7 +93,6 @@ const Hero = () => {
           >
             استكشف القوالب
           </button>
-          </button>
         </motion.div>
 
         {/* Price Badge */}
