@@ -55,9 +55,9 @@ const CountdownTimer = ({ targetDate }) => {
           className="text-center mb-12"
         >
           <div className="flex items-center justify-center gap-4 mb-4">
-            <div className="h-px w-12 bg-premium-elegantGold/40" />
-            <div className="w-1.5 h-1.5 rounded-full bg-premium-elegantGold" />
-            <div className="h-px w-12 bg-premium-elegantGold/40" />
+            <div className="h-px w-12" style={{ backgroundColor: 'rgba(201, 162, 39, 0.4)' }} />
+            <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#c9a227' }} />
+            <div className="h-px w-12" style={{ backgroundColor: 'rgba(201, 162, 39, 0.4)' }} />
           </div>
           <h2 
             className="text-xl tracking-widest uppercase font-light"

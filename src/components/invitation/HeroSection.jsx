@@ -44,7 +44,8 @@ const HeroSection = ({ invitation, onScrollToRSVP }) => {
             repeat: Infinity,
             ease: "easeInOut"
           }}
-          className="absolute top-1/4 right-1/4 w-96 h-96 bg-premium-elegantGold/10 rounded-full blur-3xl"
+          className="absolute top-1/4 right-1/4 w-96 h-96 rounded-full blur-3xl"
+          style={{ backgroundColor: 'rgba(201, 162, 39, 0.1)' }}
         />
         <motion.div
           animate={{
@@ -57,7 +58,8 @@ const HeroSection = ({ invitation, onScrollToRSVP }) => {
             ease: "easeInOut",
             delay: 2
           }}
-          className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-premium-blush-200/10 rounded-full blur-3xl"
+          className="absolute bottom-1/4 left-1/4 w-80 h-80 rounded-full blur-3xl"
+          style={{ backgroundColor: 'rgba(248, 187, 217, 0.1)' }}
         />
       </div>
 
@@ -137,9 +139,9 @@ const HeroSection = ({ invitation, onScrollToRSVP }) => {
         >
           {/* Decorative line */}
           <div className="flex items-center justify-center gap-4 mb-4">
-            <div className="h-px w-16 bg-premium-elegantGold/40" />
-            <div className="w-2 h-2 rounded-full bg-premium-elegantGold" />
-            <div className="h-px w-16 bg-premium-elegantGold/40" />
+            <div className="h-px w-16" style={{ backgroundColor: 'rgba(201, 162, 39, 0.4)' }} />
+            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: '#c9a227' }} />
+            <div className="h-px w-16" style={{ backgroundColor: 'rgba(201, 162, 39, 0.4)' }} />
           </div>
           
           <p 
