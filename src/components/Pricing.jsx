@@ -148,6 +148,7 @@ const Pricing = () => {
               </ul>
 
               <button
+                onClick={() => document.getElementById('order')?.scrollIntoView({ behavior: 'smooth' })}
                 className={`w-full py-4 rounded-full font-semibold transition-all duration-300 transform hover:scale-105 ${
                   plan.popular
                     ? 'bg-gradient-to-r from-luxury-gold-500 to-luxury-gold-400 text-luxury-obsidian shadow-gold-glow'

@@ -97,14 +97,18 @@ const TemplateGallery = () => {
                       <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
+                        onClick={() => document.getElementById('order')?.scrollIntoView({ behavior: 'smooth' })}
                         className="w-14 h-14 rounded-full bg-white flex items-center justify-center"
+                        title="معاينة"
                       >
                         <Eye className="w-6 h-6 text-luxury-obsidian" />
                       </motion.button>
                       <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
+                        onClick={() => document.getElementById('order')?.scrollIntoView({ behavior: 'smooth' })}
                         className="w-14 h-14 rounded-full bg-white flex items-center justify-center"
+                        title="اختر هذا القالب"
                       >
                         <Heart className="w-6 h-6 text-luxury-obsidian" />
                       </motion.button>

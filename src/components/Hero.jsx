@@ -80,11 +80,17 @@ const Hero = () => {
           transition={{ duration: 0.8, delay: 0.8 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
         >
-          <button className="luxury-button flex items-center gap-3 group">
+          <button 
+            onClick={() => document.getElementById('templates')?.scrollIntoView({ behavior: 'smooth' })}
+            className="luxury-button flex items-center gap-3 group"
+          >
             استكشف القوالب
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </button>
-          <button className="luxury-button-outline">
+          <button 
+            onClick={() => document.getElementById('order')?.scrollIntoView({ behavior: 'smooth' })}
+            className="luxury-button-outline"
+          >
             اطلب الآن
           </button>
         </motion.div>
