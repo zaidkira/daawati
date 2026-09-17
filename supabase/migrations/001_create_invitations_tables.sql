@@ -1,3 +1,10 @@
+-- Drop existing tables if they exist (for clean setup)
+DROP TABLE IF EXISTS rsvps CASCADE;
+DROP TABLE IF EXISTS invitations CASCADE;
+
+-- Drop existing functions if they exist
+DROP FUNCTION IF EXISTS update_updated_at_column() CASCADE;
+
 -- Create invitations table
 CREATE TABLE invitations (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
