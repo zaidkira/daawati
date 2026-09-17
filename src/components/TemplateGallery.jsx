@@ -93,7 +93,7 @@ const TemplateGallery = () => {
                       <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => window.open(`/demo/${template.slug}`, '_blank')}
+                        onClick={() => navigate(`/demo/${template.slug}`)}
                         className="w-14 h-14 rounded-full bg-white flex items-center justify-center"
                         title="معاينة"
                       >
@@ -130,13 +130,18 @@ const TemplateGallery = () => {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
+                    onClick={() => {
+                      document.getElementById('order')?.scrollIntoView({ behavior: 'smooth' })
+                      localStorage.setItem('selectedTemplate', template.slug)
+                    }}
                     className="flex-1 py-3 rounded-full bg-gradient-to-r from-luxury-gold-500 to-luxury-gold-400 text-luxury-obsidian font-semibold text-sm shadow-gold-glow"
                   >
-                    اطللب الآن
+                    اطلب الآن
                   </motion.button>
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
+                    onClick={() => navigate(`/demo/${template.slug}`)}
                     className="px-6 py-3 rounded-full border-2 border-luxury-gold-400 text-luxury-gold-400 font-semibold text-sm hover:bg-luxury-gold-400/10 transition-colors"
                   >
                     معاينة
