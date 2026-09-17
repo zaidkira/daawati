@@ -12,7 +12,7 @@ const FAQSection = ({ faq }) => {
   }
 
   return (
-    <section className="py-20 px-4 bg-gradient-to-br from-luxury-charcoal to-luxury-obsidian">
+    <section className="py-20 px-4" style={{ backgroundColor: '#fdfbf7' }}>
       <div className="max-w-4xl mx-auto">
         {/* Section Title */}
         <motion.div
@@ -22,10 +22,21 @@ const FAQSection = ({ faq }) => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl sm:text-5xl font-serif font-bold text-luxury-champagne mb-4">
+          <h2 
+            className="text-4xl sm:text-5xl font-serif font-bold mb-4"
+            style={{
+              fontFamily: '"Playfair Display", serif',
+              color: '#4a4a4a'
+            }}
+          >
             {t('faq')}
           </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-luxury-gold-400 to-luxury-gold-600 mx-auto rounded-full" />
+          <div 
+            className="w-24 h-1 mx-auto rounded-full"
+            style={{
+              background: 'linear-gradient(to right, #c9a227, #d6af59, #c9a227)'
+            }}
+          />
         </motion.div>
 
         {/* FAQ Items */}
@@ -37,19 +48,37 @@ const FAQSection = ({ faq }) => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="glass-card rounded-2xl overflow-hidden"
+              className="rounded-2xl overflow-hidden"
+              style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                backdropFilter: 'blur(10px)',
+                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+                border: '1px solid rgba(201, 162, 39, 0.15)'
+              }}
             >
               <button
                 onClick={() => toggleFAQ(index)}
                 className="w-full p-6 text-left flex items-center justify-between"
               >
-                <span className="text-lg font-medium text-luxury-champagne">
+                <span 
+                  className="text-lg font-medium"
+                  style={{
+                    fontFamily: '"Playfair Display", serif',
+                    color: '#4a4a4a'
+                  }}
+                >
                   {language === 'ar' ? item.question : item.questionFr}
                 </span>
                 {openIndex === index ? (
-                  <ChevronUp className="w-5 h-5 text-luxury-gold-400 flex-shrink-0" />
+                  <ChevronUp 
+                    className="w-5 h-5 flex-shrink-0"
+                    style={{ color: '#c9a227' }}
+                  />
                 ) : (
-                  <ChevronDown className="w-5 h-5 text-luxury-gold-400 flex-shrink-0" />
+                  <ChevronDown 
+                    className="w-5 h-5 flex-shrink-0"
+                    style={{ color: '#c9a227' }}
+                  />
                 )}
               </button>
               
@@ -63,7 +92,14 @@ const FAQSection = ({ faq }) => {
                     className="overflow-hidden"
                   >
                     <div className="px-6 pb-6 pt-0">
-                      <p className="text-luxury-champagne/80">
+                      <p 
+                        className="text-base"
+                        style={{
+                          fontFamily: '"Plus Jakarta Sans", sans-serif',
+                          color: '#6b6b6b',
+                          lineHeight: '1.6'
+                        }}
+                      >
                         {language === 'ar' ? item.answer : item.answerFr}
                       </p>
                     </div>
