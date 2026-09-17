@@ -1,79 +1,28 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { User, Mail, MessageSquare, Plus, Trash2, Check, X } from 'lucide-react'
+import { Plus, X, CheckCircle, Send } from 'lucide-react'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { supabase } from '../../lib/supabase'
 
-const RSVPForm = ({ invitationId, rsvpSettings }) => {
-  const { t, direction } = useLanguage()
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitted, setSubmitted] = useState(false)
+const RSVPForm = ({ invitationId, adultsOnly }) => {
+  const { t, language } = useLanguage()
   const [formData, setFormData] = useState({
-    guestName: '',
+    name: '',
     attending: null,
     companions: [],
     message: ''
   })
-  const [errors, setErrors] = useState({})
-
-  const validateForm = () => {
-    const newErrors = {}
-    
-    if (!formData.guestName.trim()) {
-      newErrors.guestName = 'الاسم مطلوب'
-    }
-    
-    if (formData.attending === null) {
-      newErrors.attending = 'يرجى تحديد الحضور'
-    }
-    
-    if (formData.attending === true && formData.companions.length > (rsvpSettings?.maxCompanions || 5)) {
-      newErrors.companions = `الحد الأقصى للمرافقين هو ${rsvpSettings?.maxCompanions || 5}`
-    }
-    
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    
-    if (!validateForm()) return
-    
-    setIsSubmitting(true)
-    
-    try {
-      const { data, error } = await supabase
-        .from('rsvps')
-        .insert([
-          {
-            invitation_id: invitationId,
-            guest_name: formData.guestName,
-            attending: formData.attending,
-            companions_count: formData.companions.length,
-            message: formData.message,
-            created_at: new Date().toISOString()
-          }
-        ])
-        .select()
-      
-      if (error) throw error
-      
-      setSubmitted(true)
-    } catch (error) {
-      console.error('Error submitting RSVP:', error)
-      alert('حدث خطأ أثناء إرسال التأكيد. يرجى المحاولة مرة أخرى.')
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitted, setIsSubmitted] = useState(false)
+  const [error, setError] = useState('')
 
   const addCompanion = () => {
-    if (formData.companions.length >= (rsvpSettings?.maxCompanions || 5)) return
-    setFormData({
-      ...formData,
-      companions: [...formData.companions, '']
-    })
+    if (formData.companions.length < 5) {
+      setFormData({
+        ...formData,
+        companions: [...formData.companions, '']
+      })
+    }
   }
 
   const removeCompanion = (index) => {
@@ -92,57 +41,91 @@ const RSVPForm = ({ invitationId, rsvpSettings }) => {
     })
   }
 
-  if (submitted) {
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setError('')
+    setIsSubmitting(true)
+
+    try {
+      const { data, error } = await supabase
+        .from('rsvps')
+        .insert({
+          invitation_id: invitationId,
+          guest_name: formData.name,
+          attending: formData.attending,
+          companions_count: formData.companions.filter(c => c.trim()).length,
+          companions: formData.companions.filter(c => c.trim()),
+          message: formData.message
+        })
+        .select()
+
+      if (error) throw error
+
+      setIsSubmitted(true)
+    } catch (err) {
+      console.error('RSVP submission error:', err)
+      setError(language === 'ar' ? 'حدث خطأ، يرجى المحاولة مرة أخرى' : 'An error occurred, please try again')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  if (isSubmitted) {
     return (
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-white/5 backdrop-blur-md border border-amber-500/20 rounded-3xl p-12 text-center"
-        dir={direction}
+        className="max-w-2xl mx-auto py-20 px-4"
       >
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.2, type: 'spring' }}
-          className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center mx-auto mb-6"
-        >
-          <Check className="w-10 h-10 text-white" />
-        </motion.div>
-        <h3 className="text-2xl font-serif font-bold text-amber-100 mb-4">
-          {t('thankYou')}
-        </h3>
-        <p className="text-amber-200/80">
-          ننتظر رؤيتك في هذا اليوم المميز
-        </p>
+        <div className="glass-card p-12 rounded-3xl text-center">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.2, type: 'spring' }}
+            className="w-24 h-24 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-6"
+          >
+            <CheckCircle className="w-12 h-12 text-green-400" />
+          </motion.div>
+          <h2 className="text-3xl sm:text-4xl font-serif font-bold text-luxury-champagne mb-4">
+            {t('thankYou')}
+          </h2>
+          <p className="text-luxury-champagne/80">
+            {language === 'ar' ? 'نتطلع لرؤيتك في حفلنا' : 'We look forward to seeing you at our celebration'}
+          </p>
+        </div>
       </motion.div>
     )
   }
 
   return (
-    <section id="rsvp" className="relative py-24 px-4">
+    <section id="rsvp" className="py-20 px-4">
       <div className="max-w-2xl mx-auto">
-        {/* Header */}
+        {/* Section Title */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-          dir={direction}
+          className="text-center mb-12"
         >
-          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 backdrop-blur-md border border-amber-500/20 mb-8">
-            <Mail className="w-4 h-4 text-amber-400" />
-            <span className="text-sm font-medium text-amber-300">
-              {t('rsvp')}
-            </span>
-          </div>
-          <h2 className="text-4xl sm:text-5xl font-serif font-bold text-amber-100 mb-4">
-            تأكيد الحضور
+          <h2 className="text-4xl sm:text-5xl font-serif font-bold text-luxury-champagne mb-4">
+            {t('rsvp')}
           </h2>
-          <p className="text-lg text-amber-200/70">
-            يسعدنا معرفة إن كنت ستشاركنا فرحتنا
-          </p>
+          <div className="w-24 h-1 bg-gradient-to-r from-luxury-gold-400 to-luxury-gold-600 mx-auto rounded-full" />
         </motion.div>
+
+        {/* Adults Only Notice */}
+        {adultsOnly && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="glass-card p-4 rounded-xl mb-8 text-center"
+          >
+            <p className="text-luxury-gold-300 font-medium">
+              {t('adultsOnly')}
+            </p>
+          </motion.div>
+        )}
 
         {/* Form */}
         <motion.form
@@ -151,187 +134,138 @@ const RSVPForm = ({ invitationId, rsvpSettings }) => {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
           onSubmit={handleSubmit}
-          className="bg-white/5 backdrop-blur-md border border-amber-500/20 rounded-3xl p-8 md:p-12"
-          dir={direction}
+          className="glass-card p-8 sm:p-12 rounded-3xl space-y-6"
         >
-          {/* Name Field */}
-          <div className="mb-6">
-            <label className="block text-amber-200 font-medium mb-3">
+          {/* Name */}
+          <div>
+            <label className="block text-luxury-champagne mb-2 font-medium">
               {t('name')} *
             </label>
-            <div className="relative">
-              <User className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-amber-400/60" />
-              <input
-                type="text"
-                value={formData.guestName}
-                onChange={(e) => setFormData({ ...formData, guestName: e.target.value })}
-                className={`w-full px-12 py-4 bg-white/5 border ${
-                  errors.guestName ? 'border-red-500/50' : 'border-amber-500/20'
-                } rounded-xl text-amber-100 placeholder-amber-400/40 focus:outline-none focus:border-amber-500/50 transition-all`}
-                placeholder="أدخل اسمك الكامل"
-              />
-            </div>
-            {errors.guestName && (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="mt-2 text-red-400 text-sm"
-              >
-                {errors.guestName}
-              </motion.p>
-            )}
+            <input
+              type="text"
+              required
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              className="input-luxury"
+              placeholder={language === 'ar' ? 'أدخل اسمك الكامل' : 'Enter your full name'}
+            />
           </div>
 
-          {/* Attending Radio */}
-          <div className="mb-6">
-            <label className="block text-amber-200 font-medium mb-3">
+          {/* Attending */}
+          <div>
+            <label className="block text-luxury-champagne mb-3 font-medium">
               {t('attending')} *
             </label>
             <div className="flex gap-4">
-              {[
-                { value: true, label: t('yes'), icon: Check },
-                { value: false, label: t('no'), icon: X }
-              ].map((option) => (
-                <motion.button
-                  key={option.value}
-                  type="button"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => setFormData({ ...formData, attending: option.value })}
-                  className={`flex-1 flex items-center justify-center gap-3 px-6 py-4 rounded-xl border transition-all ${
-                    formData.attending === option.value
-                      ? 'bg-amber-500/20 border-amber-500/50'
-                      : 'bg-white/5 border-amber-500/20 hover:border-amber-500/30'
-                  }`}
-                >
-                  <option.icon className={`w-5 h-5 ${
-                    formData.attending === option.value ? 'text-amber-400' : 'text-amber-400/60'
-                  }`} />
-                  <span className="text-amber-100 font-medium">{option.label}</span>
-                </motion.button>
-              ))}
-            </div>
-            {errors.attending && (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="mt-2 text-red-400 text-sm"
+              <button
+                type="button"
+                onClick={() => setFormData({ ...formData, attending: true })}
+                className={`flex-1 py-3 px-6 rounded-xl font-medium transition-all ${
+                  formData.attending === true
+                    ? 'bg-luxury-gold-500 text-luxury-obsidian'
+                    : 'bg-white/5 text-luxury-champagne border border-white/10 hover:border-luxury-gold-400/50'
+                }`}
               >
-                {errors.attending}
-              </motion.p>
-            )}
+                {t('yes')}
+              </button>
+              <button
+                type="button"
+                onClick={() => setFormData({ ...formData, attending: false })}
+                className={`flex-1 py-3 px-6 rounded-xl font-medium transition-all ${
+                  formData.attending === false
+                    ? 'bg-luxury-gold-500 text-luxury-obsidian'
+                    : 'bg-white/5 text-luxury-champagne border border-white/10 hover:border-luxury-gold-400/50'
+                }`}
+              >
+                {t('no')}
+              </button>
+            </div>
           </div>
 
-          {/* Companions (only if attending) */}
-          <AnimatePresence>
-            {formData.attending === true && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="mb-6"
-              >
-                <label className="block text-amber-200 font-medium mb-3">
-                  {t('companions')}
-                </label>
-                
+          {/* Companions */}
+          {formData.attending === true && (
+            <div>
+              <label className="block text-luxury-champagne mb-3 font-medium">
+                {t('companions')}
+              </label>
+              
+              <div className="space-y-3 mb-3">
                 {formData.companions.map((companion, index) => (
-                  <div key={index} className="flex gap-3 mb-3">
+                  <div key={index} className="flex gap-3">
                     <input
                       type="text"
                       value={companion}
                       onChange={(e) => updateCompanion(index, e.target.value)}
-                      className="flex-1 px-4 py-3 bg-white/5 border border-amber-500/20 rounded-xl text-amber-100 placeholder-amber-400/40 focus:outline-none focus:border-amber-500/50 transition-all"
-                      placeholder={`مرافق ${index + 1}`}
+                      className="input-luxury flex-1"
+                      placeholder={language === 'ar' ? 'اسم المرافق' : 'Companion name'}
                     />
-                    <motion.button
+                    <button
                       type="button"
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
                       onClick={() => removeCompanion(index)}
-                      className="p-3 rounded-xl bg-red-500/20 border border-red-500/30 hover:bg-red-500/30 transition-all"
+                      className="p-3 rounded-xl bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-all"
                     >
-                      <Trash2 className="w-5 h-5 text-red-400" />
-                    </motion.button>
+                      <X className="w-5 h-5" />
+                    </button>
                   </div>
                 ))}
-                
-                {formData.companions.length < (rsvpSettings?.maxCompanions || 5) && (
-                  <motion.button
-                    type="button"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={addCompanion}
-                    className="flex items-center gap-2 px-4 py-3 rounded-xl bg-amber-500/20 border border-amber-500/30 hover:bg-amber-500/30 transition-all text-amber-200"
-                  >
-                    <Plus className="w-5 h-5" />
-                    {t('addCompanion')}
-                  </motion.button>
-                )}
-                
-                {errors.companions && (
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="mt-2 text-red-400 text-sm"
-                  >
-                    {errors.companions}
-                  </motion.p>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
+              </div>
 
-          {/* Adults Only Notice */}
-          {rsvpSettings?.adultsOnly && (
+              {formData.companions.length < 5 && (
+                <button
+                  type="button"
+                  onClick={addCompanion}
+                  className="flex items-center gap-2 text-luxury-gold-400 hover:text-luxury-gold-300 transition-colors"
+                >
+                  <Plus className="w-5 h-5" />
+                  {t('addCompanion')}
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Message */}
+          <div>
+            <label className="block text-luxury-champagne mb-2 font-medium">
+              {t('message')}
+            </label>
+            <textarea
+              value={formData.message}
+              onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+              className="input-luxury min-h-[100px] resize-none"
+              placeholder={language === 'ar' ? 'رسالة اختيارية...' : 'Optional message...'}
+            />
+          </div>
+
+          {/* Error */}
+          {error && (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="mb-6 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="p-4 rounded-xl bg-red-500/20 text-red-400 text-center"
             >
-              <p className="text-amber-300 text-sm">
-                {t('adultsOnly')}
-              </p>
+              {error}
             </motion.div>
           )}
 
-          {/* Message (Optional) */}
-          <div className="mb-8">
-            <label className="block text-amber-200 font-medium mb-3">
-              {t('message')} {rsvpSettings?.requireMessage && '*'}
-            </label>
-            <div className="relative">
-              <MessageSquare className="absolute right-4 top-4 w-5 h-5 text-amber-400/60" />
-              <textarea
-                value={formData.message}
-                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                rows={4}
-                className="w-full px-12 py-4 bg-white/5 border border-amber-500/20 rounded-xl text-amber-100 placeholder-amber-400/40 focus:outline-none focus:border-amber-500/50 transition-all resize-none"
-                placeholder="أضف رسالة للعروسين (اختياري)"
-              />
-            </div>
-          </div>
-
-          {/* Submit Button */}
-          <motion.button
+          {/* Submit */}
+          <button
             type="submit"
-            disabled={isSubmitting}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="w-full px-8 py-4 rounded-xl font-semibold transition-all duration-300 transform disabled:opacity-50 disabled:cursor-not-allowed"
-            style={{
-              background: 'linear-gradient(135deg, #c99c2c 0%, #d6af59 50%, #c99c2c 100%)',
-              color: '#1a1a1a',
-              boxShadow: '0 0 30px rgba(201, 156, 44, 0.3)'
-            }}
+            disabled={!formData.name || formData.attending === null || isSubmitting}
+            className="luxury-button w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? 'جاري الإرسال...' : t('submit')}
-          </motion.button>
+            {isSubmitting ? (
+              <>
+                <div className="w-5 h-5 border-2 border-luxury-obsidian border-t-transparent rounded-full animate-spin" />
+                {language === 'ar' ? 'جاري الإرسال...' : 'Sending...'}
+              </>
+            ) : (
+              <>
+                <Send className="w-5 h-5" />
+                {t('submit')}
+              </>
+            )}
+          </button>
         </motion.form>
-
-        {/* Decorative Elements */}
-        <div className="absolute top-1/4 left-0 w-64 h-64 bg-amber-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-0 w-80 h-80 bg-amber-600/5 rounded-full blur-3xl" />
       </div>
     </section>
   )

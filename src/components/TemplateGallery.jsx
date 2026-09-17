@@ -1,19 +1,15 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Grid3x3, List, Heart, Eye, Sparkles } from 'lucide-react'
+import { themes } from '../data/themes'
 
 const TemplateGallery = () => {
+  const navigate = useNavigate()
   const [viewMode, setViewMode] = useState('grid')
   const [hoveredTemplate, setHoveredTemplate] = useState(null)
 
-  const templates = [
-    { id: 1, name: 'Islamic Royal', badge: 'الأكثر طلبًا', color: 'from-luxury-gold-500 to-luxury-burgundy-500' },
-    { id: 2, name: 'Sage Garden', badge: 'كلاسيكي', color: 'from-luxury-burgundy-500 to-luxury-gold-500' },
-    { id: 3, name: 'Floral Romantic', badge: 'جديد', color: 'from-luxury-gold-400 to-luxury-burgundy-400' },
-    { id: 4, name: 'Azura Beach', badge: 'جديد', color: 'from-luxury-burgundy-400 to-luxury-gold-400' },
-    { id: 5, name: 'Amazigh Royal', badge: 'جديد', color: 'from-luxury-gold-500 to-luxury-burgundy-500' },
-    { id: 6, name: 'El Mahroussa', badge: 'جديد', color: 'from-luxury-burgundy-500 to-luxury-gold-500' }
-  ]
+  const templates = Object.values(themes)
 
   return (
     <section id="templates" className="relative py-24 px-4 sm:px-8 overflow-hidden">
@@ -71,14 +67,14 @@ const TemplateGallery = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
-              onHoverStart={() => setHoveredTemplate(template.id)}
+              onHoverStart={() => setHoveredTemplate(template.slug)}
               onHoverEnd={() => setHoveredTemplate(null)}
               className="glass-card rounded-3xl overflow-hidden group cursor-pointer"
               dir="rtl"
             >
               {/* Template Preview */}
               <div className={`relative h-96 bg-gradient-to-br ${template.color} p-8 flex items-center justify-center`}>
-                <span className="text-8xl">💒</span>
+                <span className="text-8xl">{template.sealIcon}</span>
                 
                 {/* Badge */}
                 <div className="absolute top-4 right-4 px-4 py-2 rounded-full bg-gradient-to-r from-luxury-gold-500 to-luxury-gold-400 text-luxury-obsidian text-xs font-bold shadow-lg">
@@ -87,7 +83,7 @@ const TemplateGallery = () => {
 
                 {/* Hover Actions */}
                 <AnimatePresence>
-                  {hoveredTemplate === template.id && (
+                  {hoveredTemplate === template.slug && (
                     <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
@@ -97,7 +93,7 @@ const TemplateGallery = () => {
                       <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => document.getElementById('order')?.scrollIntoView({ behavior: 'smooth' })}
+                        onClick={() => window.open(`/demo/${template.slug}`, '_blank')}
                         className="w-14 h-14 rounded-full bg-white flex items-center justify-center"
                         title="معاينة"
                       >
@@ -106,7 +102,11 @@ const TemplateGallery = () => {
                       <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => document.getElementById('order')?.scrollIntoView({ behavior: 'smooth' })}
+                        onClick={() => {
+                          document.getElementById('order')?.scrollIntoView({ behavior: 'smooth' })
+                          // Store selected template in localStorage
+                          localStorage.setItem('selectedTemplate', template.slug)
+                        }}
                         className="w-14 h-14 rounded-full bg-white flex items-center justify-center"
                         title="اختر هذا القالب"
                       >

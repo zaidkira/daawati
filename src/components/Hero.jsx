@@ -80,18 +80,19 @@ const Hero = () => {
           transition={{ duration: 0.8, delay: 0.8 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
         >
-          <button 
-            onClick={() => document.getElementById('templates')?.scrollIntoView({ behavior: 'smooth' })}
+          <a 
+            href="/i/amine-fatima"
             className="luxury-button flex items-center gap-3 group"
           >
-            استكشف القوالب
+            عرض تجريبي للدعوة
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-          </button>
+          </a>
           <button 
-            onClick={() => document.getElementById('order')?.scrollIntoView({ behavior: 'smooth' })}
+            onClick={() => document.getElementById('templates')?.scrollIntoView({ behavior: 'smooth' })}
             className="luxury-button-outline"
           >
-            اطلب الآن
+            استكشف القوالب
+          </button>
           </button>
         </motion.div>
 

@@ -1,149 +1,106 @@
-import React, { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import EnvelopeOpening from '../components/invitation/EnvelopeOpening'
-import InvitationHero from '../components/invitation/InvitationHero'
+import React, { useState, useRef } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { LanguageProvider } from '../contexts/LanguageContext'
+import OpeningAnimation from '../components/invitation/OpeningAnimation'
+import HeroSection from '../components/invitation/HeroSection'
 import CountdownTimer from '../components/invitation/CountdownTimer'
-import OurStory from '../components/invitation/OurStory'
+import StoryTimeline from '../components/invitation/StoryTimeline'
 import EventProgram from '../components/invitation/EventProgram'
 import VenueDetails from '../components/invitation/VenueDetails'
 import DressCode from '../components/invitation/DressCode'
 import RSVPForm from '../components/invitation/RSVPForm'
-import InvitationFAQ from '../components/invitation/InvitationFAQ'
-import Sharing from '../components/invitation/Sharing'
-import TemplateWrapper from '../components/invitation/TemplateWrapper'
-import { LanguageProvider } from '../contexts/LanguageContext'
-import { defaultInvitationData } from '../data/invitationData'
-import { supabase } from '../lib/supabase'
+import FAQSection from '../components/invitation/FAQSection'
+import SharingSection from '../components/invitation/SharingSection'
+import LanguageSwitcher from '../components/invitation/LanguageSwitcher'
+import HostDashboard from '../components/invitation/HostDashboard'
+import { sampleInvitation } from '../data/invitationData'
 
-const InvitationPage = () => {
-  const { slug } = useParams()
-  const [invitationData, setInvitationData] = useState(defaultInvitationData)
-  const [isEnvelopeOpen, setIsEnvelopeOpen] = useState(false)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+const InvitationPageContent = ({ invitationSlug }) => {
+  const [isOpened, setIsOpened] = useState(false)
+  const [showDashboard, setShowDashboard] = useState(false)
+  const rsvpRef = useRef(null)
 
-  useEffect(() => {
-    fetchInvitationData()
-  }, [slug])
-
-  const fetchInvitationData = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('invitations')
-        .select('*')
-        .eq('slug', slug)
-        .single()
-
-      if (error) throw error
-
-      if (data) {
-        setInvitationData({
-          ...defaultInvitationData,
-          ...data.data,
-          coupleNames: data.data?.coupleNames || defaultInvitationData.coupleNames,
-          weddingDate: data.wedding_date || defaultInvitationData.weddingDate,
-          venue: data.data?.venue || defaultInvitationData.venue,
-          story: data.data?.story || defaultInvitationData.story,
-          program: data.data?.program || defaultInvitationData.program,
-          dressCode: data.data?.dressCode || defaultInvitationData.dressCode,
-          rsvpSettings: data.data?.rsvpSettings || defaultInvitationData.rsvpSettings,
-          faq: data.data?.faq || defaultInvitationData.faq,
-          theme: data.theme || defaultInvitationData.theme,
-          media: data.data?.media || defaultInvitationData.media
-        })
-      }
-    } catch (error) {
-      console.error('Error fetching invitation:', error)
-      setError('Invitation not found')
-    } finally {
-      setLoading(false)
-    }
-  }
+  const invitation = sampleInvitation // In production, fetch from Supabase based on slug
 
   const scrollToRSVP = () => {
-    const rsvpSection = document.getElementById('rsvp')
-    if (rsvpSection) {
-      rsvpSection.scrollIntoView({ behavior: 'smooth' })
-    }
+    rsvpRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-900">
-        <div className="text-amber-400">Loading...</div>
-      </div>
-    )
+  const handleOpen = () => {
+    setIsOpened(true)
   }
 
-  if (error) {
+  // Check if user is authorized for dashboard (simplified - in production use proper auth)
+  const isAuthorized = false // Will be true for authenticated hosts
+
+  if (showDashboard) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-900">
-        <div className="text-amber-400 text-center">
-          <h1 className="text-2xl font-bold mb-4">Invitation Not Found</h1>
-          <p>The invitation you're looking for doesn't exist.</p>
-        </div>
-      </div>
+      <HostDashboard 
+        invitationId={invitation.id} 
+        isAuthorized={isAuthorized}
+      />
     )
   }
 
   return (
-    <LanguageProvider>
-      <div className="min-h-screen bg-slate-900">
-        {/* Envelope Opening Animation */}
-        <EnvelopeOpening
-          onOpen={() => setIsEnvelopeOpen(true)}
-          invitationData={invitationData}
-        />
-
-        {/* Main Content (hidden until envelope opens) */}
-        {isEnvelopeOpen && (
-          <TemplateWrapper theme={invitationData.theme}>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1 }}
-            >
-            {/* Hero Section */}
-            <InvitationHero
-              invitationData={invitationData}
-              onRSVPClick={scrollToRSVP}
+    <div className="min-h-screen bg-luxury-obsidian">
+      <OpeningAnimation onOpen={handleOpen} invitation={invitation} />
+      
+      <AnimatePresence mode="wait">
+        {isOpened && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+          >
+            <LanguageSwitcher languagePair={invitation.settings.languagePair} />
+            
+            <HeroSection 
+              invitation={invitation} 
+              onScrollToRSVP={scrollToRSVP}
             />
-
-            {/* Countdown Timer */}
-            <CountdownTimer targetDate={invitationData.weddingDate} />
-
-            {/* Our Story */}
-            <OurStory story={invitationData.story} />
-
-            {/* Event Program */}
-            <EventProgram program={invitationData.program} />
-
-            {/* Venue Details */}
-            <VenueDetails
-              venue={invitationData.venue}
-              weddingDate={invitationData.weddingDate}
-              coupleNames={invitationData.coupleNames}
-            />
-
-            {/* Dress Code */}
-            <DressCode dressCode={invitationData.dressCode} />
-
-            {/* RSVP Form */}
-            <RSVPForm
-              invitationId={slug}
-              rsvpSettings={invitationData.rsvpSettings}
-            />
-
-            {/* FAQ */}
-            <InvitationFAQ faq={invitationData.faq} />
-
-            {/* Sharing */}
-            <Sharing invitationSlug={slug} />
+            
+            <CountdownTimer targetDate={invitation.date} />
+            
+            <StoryTimeline story={invitation.story} />
+            
+            <EventProgram program={invitation.program} />
+            
+            <VenueDetails venue={invitation.venue} date={invitation.date} />
+            
+            <DressCode dressCode={invitation.dressCode} />
+            
+            <div ref={rsvpRef}>
+              <RSVPForm 
+                invitationId={invitation.id}
+                adultsOnly={invitation.settings.adultsOnly}
+              />
+            </div>
+            
+            <FAQSection faq={invitation.faq} />
+            
+            <SharingSection invitationSlug={invitationSlug} />
+            
+            {/* Hidden dashboard trigger for demo */}
+            <div className="fixed bottom-4 right-4 z-50">
+              <button
+                onClick={() => setShowDashboard(true)}
+                className="p-2 rounded-full bg-white/10 text-white/50 hover:text-white/80 transition-all text-xs"
+              >
+                Dashboard
+              </button>
+            </div>
           </motion.div>
-          </TemplateWrapper>
         )}
-      </div>
+      </AnimatePresence>
+    </div>
+  )
+}
+
+const InvitationPage = ({ invitationSlug }) => {
+  return (
+    <LanguageProvider>
+      <InvitationPageContent invitationSlug={invitationSlug} />
     </LanguageProvider>
   )
 }

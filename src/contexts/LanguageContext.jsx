@@ -1,72 +1,80 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
 
-const LanguageContext = createContext({})
-
-export const translations = {
+const translations = {
   ar: {
-    direction: 'rtl',
-    font: 'Cairo, sans-serif',
+    // Opening
     tapToOpen: 'اضغط للفتح',
-    beginningOfForever: 'بداية للأبد',
-    confirmAttendance: 'تأكيد الحضور',
+    // Hero
+    weddingOf: 'زفاف',
+    and: 'و',
+    foreverStart: 'بداية للأبد',
+    confirmPresence: 'تأكيد الحضور',
+    // Countdown
     days: 'أيام',
     hours: 'ساعات',
     minutes: 'دقائق',
     seconds: 'ثواني',
+    // Story
     ourStory: 'قصتنا',
-    eventProgram: 'برنامج الحفل',
+    // Program
+    program: 'برنامج الحفل',
+    // Venue
     venue: 'مكان الحفل',
     openInMaps: 'فتح في الخرائط',
     addToCalendar: 'إضافة للتقويم',
-    dressCode: 'قيمة الملابس',
+    // Dress Code
+    dressCode: 'قانون اللباس',
+    // RSVP
     rsvp: 'تأكيد الحضور',
     name: 'الاسم',
-    attending: 'هل ستحضر؟',
+    attending: 'الحضور',
     yes: 'نعم',
     no: 'لا',
-    companions: 'المرافقين',
+    companions: 'مرافقين',
     addCompanion: 'إضافة مرافق',
     message: 'رسالة',
     submit: 'إرسال',
-    adultsOnly: 'حفلة للكبار فقط',
+    adultsOnly: 'الحفلة للكبار فقط',
     thankYou: 'شكراً لتأكيد حضورك!',
+    // Dashboard
+    dashboard: 'لوحة التحكم',
+    totalConfirmed: 'إجمالي المؤكدين',
+    totalDeclined: 'إجمالي المعتذرين',
+    totalPending: 'إجمالي المعلقين',
+    exportCSV: 'تصدير CSV',
+    // FAQ
     faq: 'الأسئلة الشائعة',
+    // Sharing
     share: 'مشاركة',
-    copyLink: 'نسخ الرابط',
-    downloadQR: 'تحميل رمز QR',
-    guestArrival: 'وصول الضيوف',
-    ceremony: 'حفل الزفاف والفاتحة',
-    dinner: 'العشاء',
-    cake: 'تقطيع الكعكة',
-    closing: 'ختام الحفل',
-    elegantAttire: 'ملابس أنيقة',
-    formalAttire: 'ملابس رسمية',
-    casualAttire: 'ملابس عادية',
-    firstMeeting: 'أول لقاء',
-    familyVisit: 'الشوفة',
-    engagement: 'الخطوبة',
-    contract: 'الفاتحة',
-    forever: 'إلى الأبد ∞'
+    qrCode: 'رمز QR',
   },
   fr: {
-    direction: 'ltr',
-    font: 'Playfair Display, serif',
+    // Opening
     tapToOpen: 'Appuyez pour ouvrir',
-    beginningOfForever: 'Le début de notre pour toujours',
-    confirmAttendance: 'Confirmer votre présence',
+    // Hero
+    weddingOf: 'Mariage de',
+    and: 'et',
+    foreverStart: 'Le début de notre pour toujours',
+    confirmPresence: 'Confirmer votre présence',
+    // Countdown
     days: 'Jours',
     hours: 'Heures',
     minutes: 'Minutes',
     seconds: 'Secondes',
-    ourStory: 'Notre histoire',
-    eventProgram: 'Programme de la journée',
+    // Story
+    ourStory: 'Notre Histoire',
+    // Program
+    program: 'Programme',
+    // Venue
     venue: 'Lieu',
     openInMaps: 'Ouvrir dans Maps',
     addToCalendar: 'Ajouter au calendrier',
+    // Dress Code
     dressCode: 'Code vestimentaire',
+    // RSVP
     rsvp: 'RSVP',
     name: 'Nom',
-    attending: 'Présence?',
+    attending: 'Présence',
     yes: 'Oui',
     no: 'Non',
     companions: 'Accompagnants',
@@ -75,54 +83,92 @@ export const translations = {
     submit: 'Envoyer',
     adultsOnly: 'Soirée réservée aux adultes',
     thankYou: 'Merci pour votre confirmation!',
+    // Dashboard
+    dashboard: 'Tableau de bord',
+    totalConfirmed: 'Total confirmés',
+    totalDeclined: 'Total déclinés',
+    totalPending: 'Total en attente',
+    exportCSV: 'Exporter CSV',
+    // FAQ
     faq: 'FAQ',
+    // Sharing
     share: 'Partager',
-    copyLink: 'Copier le lien',
-    downloadQR: 'Télécharger QR',
-    guestArrival: 'Arrivée des invités',
-    ceremony: 'Cérémonie & Fatiha',
-    dinner: 'Dîner',
-    cake: 'Coupe du gâteau',
-    closing: 'Clôture',
-    elegantAttire: 'Tenue élégante',
-    formalAttire: 'Tenue formelle',
-    casualAttire: 'Tenue décontractée',
-    firstMeeting: 'Première rencontre',
-    familyVisit: 'La visite familiale',
-    engagement: 'Fiançailles',
-    contract: 'Fatiha',
-    forever: 'Pour toujours ∞'
+    qrCode: 'Code QR',
+  },
+  en: {
+    // Opening
+    tapToOpen: 'Tap to open',
+    // Hero
+    weddingOf: 'Wedding of',
+    and: 'and',
+    foreverStart: 'The beginning of our forever',
+    confirmPresence: 'Confirm your presence',
+    // Countdown
+    days: 'Days',
+    hours: 'Hours',
+    minutes: 'Minutes',
+    seconds: 'Seconds',
+    // Story
+    ourStory: 'Our Story',
+    // Program
+    program: 'Program',
+    // Venue
+    venue: 'Venue',
+    openInMaps: 'Open in Maps',
+    addToCalendar: 'Add to Calendar',
+    // Dress Code
+    dressCode: 'Dress Code',
+    // RSVP
+    rsvp: 'RSVP',
+    name: 'Name',
+    attending: 'Attending',
+    yes: 'Yes',
+    no: 'No',
+    companions: 'Companions',
+    addCompanion: 'Add companion',
+    message: 'Message',
+    submit: 'Submit',
+    adultsOnly: 'Adults only',
+    thankYou: 'Thank you for your confirmation!',
+    // Dashboard
+    dashboard: 'Dashboard',
+    totalConfirmed: 'Total Confirmed',
+    totalDeclined: 'Total Declined',
+    totalPending: 'Total Pending',
+    exportCSV: 'Export CSV',
+    // FAQ
+    faq: 'FAQ',
+    // Sharing
+    share: 'Share',
+    qrCode: 'QR Code',
   }
 }
+
+const LanguageContext = createContext()
 
 export const LanguageProvider = ({ children }) => {
   const [language, setLanguage] = useState('ar')
   const [direction, setDirection] = useState('rtl')
 
-  const toggleLanguage = () => {
-    const newLang = language === 'ar' ? 'fr' : 'ar'
-    setLanguage(newLang)
-    setDirection(translations[newLang].direction)
-    document.documentElement.dir = translations[newLang].direction
-    document.documentElement.lang = newLang
+  const changeLanguage = (lang) => {
+    setLanguage(lang)
+    setDirection(lang === 'ar' ? 'rtl' : 'ltr')
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr'
+    document.documentElement.lang = lang
   }
 
   const t = (key) => translations[language][key] || key
 
-  const value = {
-    language,
-    direction,
-    toggleLanguage,
-    t,
-    font: translations[language].font
-  }
-
-  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>
+  return (
+    <LanguageContext.Provider value={{ language, direction, changeLanguage, t }}>
+      {children}
+    </LanguageContext.Provider>
+  )
 }
 
 export const useLanguage = () => {
   const context = useContext(LanguageContext)
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useLanguage must be used within a LanguageProvider')
   }
   return context

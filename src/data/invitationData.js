@@ -1,168 +1,92 @@
-export const defaultInvitationData = {
-  // Basic Information
-  coupleNames: {
-    groom: 'أحمد',
-    bride: 'فاطمة'
-  },
-  weddingDate: '2025-06-15T18:00:00',
-  tagline: 'بداية جديدة لحياة جميلة',
-  
-  // Venue
-  venue: {
-    name: 'قصر الأمير',
-    address: 'الجزائر العاصمة، حيدرة',
-    googleMapsUrl: 'https://maps.app.goo.gl/example',
-    coordinates: {
-      lat: 36.7538,
-      lng: 3.0588
-    }
-  },
-  
-  // Story Timeline
-  story: [
-    {
-      year: '2020',
-      title: 'أول لقاء',
-      description: 'تعارفنا في صدفة جميرة غيرت حياتنا'
-    },
-    {
-      year: '2021',
-      title: 'الشوفة',
-      description: 'زيارة عائلية رسمية لطلب اليد'
-    },
-    {
-      year: '2022',
-      title: 'الخطوبة',
-      description: 'احتفلنا بخطوبتنا وسط الأهل والأصدقاء'
-    },
-    {
-      year: '2023',
-      title: 'الفاتحة',
-      description: 'عقدنا القران وبدأنا رحلة الحياة معاً'
-    },
-    {
-      year: '∞',
-      title: 'إلى الأبد',
-      description: 'معاً نبني حياة مليئة بالحب والسعادة'
-    }
-  ],
-  
-  // Event Program
-  program: [
-    {
-      time: '18:00',
-      title: 'وصول الضيوف'
-    },
-    {
-      time: '18:30',
-      title: 'حفل الزفاف والفاتحة'
-    },
-    {
-      time: '20:00',
-      title: 'العشاء'
-    },
-    {
-      time: '21:30',
-      title: 'تقطيع الكعكة'
-    },
-    {
-      time: '23:00',
-      title: 'ختام الحفل'
-    }
-  ],
-  
-  // Dress Code
-  dressCode: {
-    type: 'elegant',
-    description: 'ملابس أنيقة - رسمية'
-  },
-  
-  // RSVP Settings
-  rsvpSettings: {
-    adultsOnly: false,
-    maxCompanions: 5,
-    requireMessage: false
-  },
-  
-  // FAQ
-  faq: [
-    {
-      question: 'كم يستغرق الوصول إلى المكان؟',
-      answer: 'المكان يبعد 15 دقيقة عن وسط المدينة'
-    },
-    {
-      question: 'هل هناك مواقف سيارات؟',
-      answer: 'نعم، يتوفر مواقف سيارات مجانية للضيوف'
-    },
-    {
-      question: 'هل يمكن إحضار الأطفال؟',
-      answer: 'نعم، الأطفال مرحب بهم'
-    }
-  ],
-  
-  // Theme
-  theme: 'islamic-royal',
-  
-  // Media
-  media: {
-    backgroundImage: '/images/wedding-bg.jpg',
-    backgroundVideo: '/videos/wedding-bg.mp4',
-    openingChime: '/audio/opening-chime.mp3',
-    backgroundMusic: '/audio/music.mp3'
-  }
-}
-
 export const invitationTemplates = {
-  'islamic-royal': {
+  royal: {
+    id: 'royal',
     name: 'Islamic Royal',
     colors: {
-      primary: '#c99c2c',
-      secondary: '#1a1a1a',
-      accent: '#8b0000',
-      text: '#f5e6d3'
+      primary: '#7b1e2b',
+      secondary: '#c6a15b',
+      background: '#0a0a0a',
+      text: '#f7f3e9'
     },
     fonts: {
-      arabic: 'Amiri, serif',
-      french: 'Playfair Display, serif'
+      arabic: 'Amiri',
+      latin: 'Playfair Display'
     }
   },
-  'sage-garden': {
-    name: 'Sage Garden',
-    colors: {
-      primary: '#9CAF88',
-      secondary: '#f5f5f5',
-      accent: '#6B8E23',
-      text: '#2d2d2d'
-    },
-    fonts: {
-      arabic: 'Cairo, sans-serif',
-      french: 'Lora, serif'
-    }
-  },
-  'floral-romantic': {
-    name: 'Floral Romantic',
-    colors: {
-      primary: '#FFB6C1',
-      secondary: '#FFF0F5',
-      accent: '#FF69B4',
-      text: '#4a4a4a'
-    },
-    fonts: {
-      arabic: 'Tajawal, sans-serif',
-      french: 'Great Vibes, cursive'
-    }
-  },
-  'azura-beach': {
+  beach: {
+    id: 'beach',
     name: 'Azura Beach',
     colors: {
-      primary: '#00CED1',
-      secondary: '#F0F8FF',
-      accent: '#20B2AA',
+      primary: '#1e90ff',
+      secondary: '#87ceeb',
+      background: '#f0f8ff',
       text: '#2c3e50'
     },
     fonts: {
-      arabic: 'Cairo, sans-serif',
-      french: 'Montserrat, sans-serif'
+      arabic: 'Cairo',
+      latin: 'Montserrat'
     }
+  },
+  garden: {
+    id: 'garden',
+    name: 'Garden Romance',
+    colors: {
+      primary: '#228b22',
+      secondary: '#90ee90',
+      background: '#f5fffa',
+      text: '#2f4f4f'
+    },
+    fonts: {
+      arabic: 'Tajawal',
+      latin: 'Georgia'
+    }
+  }
+}
+
+export const sampleInvitation = {
+  id: 'amine-fatima',
+  template: 'royal',
+  couple: {
+    groomName: 'أمين',
+    brideName: 'فاطمة',
+    groomNameFr: 'Amine',
+    brideNameFr: 'Fatima'
+  },
+  date: '2026-12-15T18:00:00',
+  venue: {
+    name: 'قصر السعادة',
+    nameFr: 'Palais du Bonheur',
+    address: 'الجزائر العاصمة',
+    addressFr: 'Alger Centre',
+    coordinates: { lat: 36.7538, lng: 3.0588 },
+    mapsUrl: 'https://maps.app.goo.gl/example'
+  },
+  story: [
+    { year: '2020', title: 'أول لقاء', titleFr: 'Première rencontre', text: 'التقينا لأول مرة في جامعة الجزائر', textFr: 'Nous nous sommes rencontrés à l\'université d\'Alger' },
+    { year: '2021', title: 'الشوفة', titleFr: 'La demande', text: 'زيارة عائلية رسمية للخطوبة', textFr: 'Visite familiale officielle pour les fiançailles' },
+    { year: '2022', title: 'الخطوبة', titleFr: 'Fiançailles', text: 'احتفلنا بخطبتنا في presence العائلة', textFr: 'Nous avons célébré nos fiançailles en présence de la famille' },
+    { year: '2023', title: 'الفاتحة', titleFr: 'Le contrat', text: 'كتابة الفاتحة وربط الميثاق', textFr: 'Signature du contrat et lien du mariage' },
+    { year: '∞', title: 'للأبد', titleFr: 'Pour toujours', text: 'بداية حياتنا المشتركة', textFr: 'Le début de notre vie commune' }
+  ],
+  program: [
+    { time: '17:00', title: 'وصول الضيوف', titleFr: 'Arrivée des invités' },
+    { time: '18:00', title: 'الطقوس والفاتحة', titleFr: 'Cérémonie et Fatiha' },
+    { time: '19:30', title: 'العشاء', titleFr: 'Dîner' },
+    { time: '21:00', title: 'قطع الكعكة', titleFr: 'Coupe du gâteau' },
+    { time: '22:00', title: 'ختام الحفل', titleFr: 'Clôture' }
+  ],
+  dressCode: {
+    text: 'Tenue élégante de soirée',
+    textAr: 'لباس رسمي أنيق'
+  },
+  faq: [
+    { question: 'هل الحفلة للكبار فقط؟', questionFr: 'Est-ce que la soirée est réservée aux adultes ?', answer: 'نعم، الحفلة مخصصة للكبار فقط', answerFr: 'Oui, la soirée est réservée aux adultes' },
+    { question: 'هل يمكنني إضافة مرافق؟', questionFr: 'Puis-je amener un accompagnant ?', answer: 'يمكنك إضافة مرافق واحد كحد أقصى', answerFr: 'Vous pouvez amener un accompagnant maximum' },
+    { question: 'ما هو قانون اللباس؟', questionFr: 'Quel est le code vestimentaire ?', answer: 'لباس رسمي أنيق', answerFr: 'Tenue élégante de soirée' }
+  ],
+  settings: {
+    adultsOnly: true,
+    languagePair: 'ar-fr',
+    backgroundMusic: true
   }
 }

@@ -22,16 +22,36 @@ CREATE TABLE IF NOT EXISTS public.orders (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Invitations table
+CREATE TABLE IF NOT EXISTS public.invitations (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  order_id UUID REFERENCES public.orders(id),
+  slug TEXT UNIQUE NOT NULL,
+  template TEXT NOT NULL,
+  couple_data JSONB NOT NULL,
+  event_data JSONB NOT NULL,
+  story_data JSONB,
+  program_data JSONB,
+  venue_data JSONB,
+  dress_code_data JSONB,
+  faq_data JSONB,
+  settings JSONB,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- RSVPs table
 CREATE TABLE IF NOT EXISTS public.rsvps (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   order_id UUID REFERENCES public.orders(id),
+  invitation_id TEXT,
   guest_name TEXT NOT NULL,
   guest_phone TEXT,
-  status TEXT DEFAULT 'pending',
-  attendees INTEGER DEFAULT 1,
-  plus_ones INTEGER DEFAULT 0,
-  notes TEXT,
+  attending BOOLEAN,
+  companions_count INTEGER DEFAULT 0,
+  companions TEXT[],
+  message TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -43,6 +63,7 @@ CREATE TABLE IF NOT EXISTS public.rsvps (
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.rsvps ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.invitations ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies
 CREATE POLICY "Users can view own profile" ON public.profiles FOR SELECT USING (auth.uid() = id);
@@ -52,11 +73,24 @@ CREATE POLICY "Users can view own orders" ON public.orders FOR SELECT USING (aut
 CREATE POLICY "Users can create own orders" ON public.orders FOR INSERT WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "Users can update own orders" ON public.orders FOR UPDATE USING (auth.uid() = user_id);
 
+CREATE POLICY "Anyone can view RSVPs by invitation_id" ON public.rsvps FOR SELECT USING (invitation_id IS NOT NULL);
+CREATE POLICY "Anyone can create RSVPs" ON public.rsvps FOR INSERT WITH CHECK (invitation_id IS NOT NULL);
 CREATE POLICY "Users can view RSVPs for their orders" ON public.rsvps FOR SELECT USING (
   EXISTS (SELECT 1 FROM public.orders WHERE orders.id = rsvps.order_id AND orders.user_id = auth.uid())
 );
 CREATE POLICY "Users can update RSVPs for their orders" ON public.rsvps FOR UPDATE USING (
   EXISTS (SELECT 1 FROM public.orders WHERE orders.id = rsvps.order_id AND orders.user_id = auth.uid())
+);
+
+CREATE POLICY "Anyone can view active invitations by slug" ON public.invitations FOR SELECT USING (is_active = true);
+CREATE POLICY "Users can view own invitations" ON public.invitations FOR SELECT USING (
+  EXISTS (SELECT 1 FROM public.orders WHERE orders.id = invitations.order_id AND orders.user_id = auth.uid())
+);
+CREATE POLICY "Users can create own invitations" ON public.invitations FOR INSERT WITH CHECK (
+  EXISTS (SELECT 1 FROM public.orders WHERE orders.id = invitations.order_id AND orders.user_id = auth.uid())
+);
+CREATE POLICY "Users can update own invitations" ON public.invitations FOR UPDATE USING (
+  EXISTS (SELECT 1 FROM public.orders WHERE orders.id = invitations.order_id AND orders.user_id = auth.uid())
 );
 
 -- Function to handle new user profile
@@ -97,4 +131,8 @@ CREATE TRIGGER orders_updated_at
 
 CREATE TRIGGER rsvps_updated_at
   BEFORE UPDATE ON public.rsvps
+  FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();
+
+CREATE TRIGGER invitations_updated_at
+  BEFORE UPDATE ON public.invitations
   FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();

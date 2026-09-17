@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { AuthProvider } from './contexts/AuthContext'
 import Hero from './components/Hero'
@@ -15,6 +15,7 @@ import FAQ from './components/FAQ'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
 import InvitationPage from './pages/InvitationPage'
+import DemoPage from './pages/DemoPage'
 import HostDashboard from './components/dashboard/HostDashboard'
 
 function LandingPage() {
@@ -82,8 +83,10 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/i/:slug" element={<InvitationPage />} />
+          <Route path="/demo/:slug" element={<DemoPage />} />
+          <Route path="/i/:invitationSlug" element={<InvitationPage />} />
           <Route path="/dashboard/:invitationId" element={<HostDashboard />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
     </AuthProvider>

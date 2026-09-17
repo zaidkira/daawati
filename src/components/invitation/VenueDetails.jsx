@@ -1,149 +1,123 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { MapPin, Calendar, ExternalLink, Navigation } from 'lucide-react'
+import { MapPin, Calendar, ExternalLink } from 'lucide-react'
 import { useLanguage } from '../../contexts/LanguageContext'
-import { downloadICS, generateGoogleCalendarLink } from '../../utils/calendarUtils'
 
-const VenueDetails = ({ venue, weddingDate, coupleNames }) => {
-  const { t, direction } = useLanguage()
+const VenueDetails = ({ venue, date }) => {
+  const { t, language } = useLanguage()
 
-  const handleAddToCalendar = () => {
-    const eventData = {
-      title: `زفاف ${coupleNames.groom} و ${coupleNames.bride}`,
-      startDate: weddingDate,
-      endDate: new Date(new Date(weddingDate).getTime() + 6 * 60 * 60 * 1000), // 6 hours later
-      location: venue.name,
-      description: `دعوة لحضور زفاف ${coupleNames.groom} و ${coupleNames.bride}`
-    }
+  const generateCalendarLink = () => {
+    const eventDate = new Date(date)
+    const startDate = eventDate.toISOString().replace(/-|:|\.\d\d\d/g, '')
+    const endDate = new Date(eventDate.getTime() + 5 * 60 * 60 * 1000).toISOString().replace(/-|:|\.\d\d\d/g, '')
     
-    downloadICS(eventData)
+    const title = language === 'ar' 
+      ? `زفاف ${venue.name}` 
+      : `Mariage - ${venue.nameFr}`
+    
+    const details = language === 'ar'
+      ? `المكان: ${venue.name} - ${venue.address}`
+      : `Lieu: ${venue.nameFr} - ${venue.addressFr}`
+    
+    const location = venue.address
+    
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${startDate}/${endDate}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}`
   }
 
-  const handleGoogleCalendar = () => {
-    const eventData = {
-      title: `زفاف ${coupleNames.groom} و ${coupleNames.bride}`,
-      startDate: weddingDate,
-      endDate: new Date(new Date(weddingDate).getTime() + 6 * 60 * 60 * 1000),
-      location: venue.name,
-      description: `دعوة لحضور زفاف ${coupleNames.groom} و ${coupleNames.bride}`
+  const generateICS = () => {
+    const eventDate = new Date(date)
+    const endDate = new Date(eventDate.getTime() + 5 * 60 * 60 * 1000)
+    
+    const formatDate = (date) => {
+      return date.toISOString().replace(/-|:|\.\d\d\d/g, '')
     }
     
-    window.open(generateGoogleCalendarLink(eventData), '_blank')
+    const title = language === 'ar' 
+      ? `زفاف ${venue.name}` 
+      : `Mariage - ${venue.nameFr}`
+    
+    const icsContent = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'BEGIN:VEVENT',
+      `DTSTART:${formatDate(eventDate)}`,
+      `DTEND:${formatDate(endDate)}`,
+      `SUMMARY:${title}`,
+      `DESCRIPTION:${language === 'ar' ? venue.name : venue.nameFr}`,
+      `LOCATION:${language === 'ar' ? venue.address : venue.addressFr}`,
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].join('\r\n')
+    
+    const blob = new Blob([icsContent], { type: 'text/calendar' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'wedding-invitation.ics'
+    link.click()
+    URL.revokeObjectURL(url)
   }
 
   return (
-    <section className="relative py-24 px-4">
+    <section className="py-20 px-4">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
+        {/* Section Title */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
-          dir={direction}
         >
-          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 backdrop-blur-md border border-amber-500/20 mb-8">
-            <MapPin className="w-4 h-4 text-amber-400" />
-            <span className="text-sm font-medium text-amber-300">
-              {t('venue')}
-            </span>
-          </div>
-          <h2 className="text-4xl sm:text-5xl font-serif font-bold text-amber-100 mb-4">
-            مكان الحفل
+          <h2 className="text-4xl sm:text-5xl font-serif font-bold text-luxury-champagne mb-4">
+            {t('venue')}
           </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-luxury-gold-400 to-luxury-gold-600 mx-auto rounded-full" />
         </motion.div>
 
         {/* Venue Card */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="bg-white/5 backdrop-blur-md border border-amber-500/20 rounded-3xl p-8 md:p-12"
-          dir={direction}
+          className="glass-card p-8 sm:p-12 rounded-3xl text-center"
         >
-          {/* Venue Name */}
-          <div className="text-center mb-8">
-            <h3 className="text-3xl font-serif font-bold text-amber-100 mb-4">
-              {venue.name}
-            </h3>
-            <p className="text-amber-200/80 text-lg">
-              {venue.address}
-            </p>
+          <div className="flex justify-center mb-6">
+            <div className="w-20 h-20 rounded-full bg-luxury-gold-400/20 flex items-center justify-center">
+              <MapPin className="w-10 h-10 text-luxury-gold-400" />
+            </div>
           </div>
+
+          <h3 className="text-3xl sm:text-4xl font-serif font-bold text-luxury-champagne mb-3">
+            {language === 'ar' ? venue.name : venue.nameFr}
+          </h3>
+          
+          <p className="text-lg text-luxury-champagne/80 mb-8">
+            {language === 'ar' ? venue.address : venue.addressFr}
+          </p>
 
           {/* Action Buttons */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Open in Maps */}
-            <motion.a
-              href={venue.googleMapsUrl}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a
+              href={venue.mapsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="flex items-center justify-center gap-3 px-6 py-4 rounded-xl bg-amber-500/20 border border-amber-500/30 hover:bg-amber-500/30 transition-all"
+              className="luxury-button flex items-center justify-center gap-2"
             >
-              <MapPin className="w-5 h-5 text-amber-400" />
-              <span className="text-amber-100 font-medium">
-                {t('openInMaps')}
-              </span>
-              <ExternalLink className="w-4 h-4 text-amber-400/60" />
-            </motion.a>
-
-            {/* Add to Calendar (ICS) */}
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={handleAddToCalendar}
-              className="flex items-center justify-center gap-3 px-6 py-4 rounded-xl bg-amber-500/20 border border-amber-500/30 hover:bg-amber-500/30 transition-all"
+              <ExternalLink className="w-5 h-5" />
+              {t('openInMaps')}
+            </a>
+            
+            <button
+              onClick={generateICS}
+              className="luxury-button-outline flex items-center justify-center gap-2"
             >
-              <Calendar className="w-5 h-5 text-amber-400" />
-              <span className="text-amber-100 font-medium">
-                {t('addToCalendar')}
-              </span>
-            </motion.button>
-
-            {/* Google Calendar */}
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={handleGoogleCalendar}
-              className="flex items-center justify-center gap-3 px-6 py-4 rounded-xl bg-amber-500/20 border border-amber-500/30 hover:bg-amber-500/30 transition-all"
-            >
-              <Navigation className="w-5 h-5 text-amber-400" />
-              <span className="text-amber-100 font-medium">
-                Google Calendar
-              </span>
-            </motion.button>
+              <Calendar className="w-5 h-5" />
+              {t('addToCalendar')}
+            </button>
           </div>
-
-          {/* Map Preview */}
-          {venue.coordinates && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="mt-8 rounded-2xl overflow-hidden border border-amber-500/20"
-            >
-              <iframe
-                src={`https://www.google.com/maps?q=${venue.coordinates.lat},${venue.coordinates.lng}&z=15&output=embed`}
-                width="100%"
-                height="300"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Venue Location"
-              />
-            </motion.div>
-          )}
         </motion.div>
-
-        {/* Decorative Elements */}
-        <div className="absolute top-1/4 left-0 w-64 h-64 bg-amber-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-0 w-80 h-80 bg-amber-600/5 rounded-full blur-3xl" />
       </div>
     </section>
   )

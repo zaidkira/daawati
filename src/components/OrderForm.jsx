@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Send, Check, Calendar, Lock } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
+import { themes } from '../data/themes'
 
 const OrderForm = () => {
   const { user } = useAuth()
@@ -16,6 +17,15 @@ const OrderForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
 
+  // Load selected template from localStorage
+  useEffect(() => {
+    const selectedTemplate = localStorage.getItem('selectedTemplate')
+    if (selectedTemplate) {
+      setFormData(prev => ({ ...prev, template: selectedTemplate }))
+      localStorage.removeItem('selectedTemplate') // Clear after loading
+    }
+  }, [])
+
   const packages = [
     { id: 'essential', name: 'الأساسية', price: '4.900' },
     { id: 'premium', name: 'المميزة', price: '6.900', popular: true },
@@ -23,13 +33,8 @@ const OrderForm = () => {
   ]
 
   const templates = [
-    'أختار لاحقًا',
-    'Islamic Royal',
-    'Sage Garden',
-    'Floral Romantic',
-    'Azura Beach',
-    'Amazigh Royal',
-    'El Mahroussa'
+    { id: '', name: 'أختار لاحقًا' },
+    ...Object.values(themes).map(theme => ({ id: theme.slug, name: theme.name }))
   ]
 
   const handleSubmit = async (e) => {
@@ -44,6 +49,7 @@ const OrderForm = () => {
       }
 
       // Save order to Supabase
+      const selectedTheme = Object.values(themes).find(t => t.slug === formData.template)
       const { data, error } = await supabase
         .from('orders')
         .insert([
@@ -51,7 +57,7 @@ const OrderForm = () => {
             user_id: user.id,
             package_name: packages.find(p => p.id === formData.package)?.name,
             package_price: packages.find(p => p.id === formData.package)?.price,
-            template_name: formData.template,
+            template_name: selectedTheme?.name || formData.template,
             groom_name: formData.groomName,
             bride_name: formData.brideName,
             phone: formData.phone,
@@ -195,18 +201,18 @@ const OrderForm = () => {
               <div className="flex flex-wrap gap-3">
                 {templates.map((template) => (
                   <motion.button
-                    key={template}
+                    key={template.id}
                     type="button"
-                    onClick={() => setFormData({ ...formData, template })}
+                    onClick={() => setFormData({ ...formData, template: template.id })}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
-                      formData.template === template
+                      formData.template === template.id
                         ? 'bg-gradient-to-r from-luxury-gold-500 to-luxury-gold-400 text-luxury-obsidian'
                         : 'bg-white/5 border border-white/10 text-luxury-champagne hover:border-luxury-gold-400/50'
                     }`}
                   >
-                    {template}
+                    {template.name}
                   </motion.button>
                 ))}
               </div>
