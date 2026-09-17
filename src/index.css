@@ -82,20 +82,6 @@
   }
 }
 
-/* Premium color palette */
-:root {
-  --sage-100: #e8ede4;
-  --sage-200: #d4dbd0;
-  --sage-300: #c0c9bb;
-  --cream-100: #fdfbf7;
-  --cream-200: #f5f0e8;
-  --blush-100: #fce4ec;
-  --blush-200: #f8bbd9;
-  --terracotta: #c9a227;
-  --warm-brown: #8b7355;
-  --elegant-gold: #c9a227;
-}
-
 /* Template System Variables */
 .invitation-template {
   --primary-color: #c99c2c;
