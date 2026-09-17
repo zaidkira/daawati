@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;500;600;700&family=Cairo:wght@300;400;500;600;700&family=Tajawal:wght@300;400;500;700&family=Playfair+Display:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Lora:wght@400;500;600&family=Great+Vibes&family=Montserrat:wght@300;400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -52,6 +52,16 @@
   .text-balance {
     text-wrap: balance;
   }
+}
+
+/* Template System Variables */
+.invitation-template {
+  --primary-color: #c99c2c;
+  --secondary-color: #1a1a1a;
+  --accent-color: #8b0000;
+  --text-color: #f5e6d3;
+  --font-arabic: 'Amiri', serif;
+  --font-french: 'Playfair Display', serif;
 }
 
 /* Custom scrollbar */
