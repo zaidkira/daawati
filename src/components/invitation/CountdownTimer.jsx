@@ -44,14 +44,40 @@ const CountdownTimer = ({ targetDate }) => {
   ]
 
   return (
-    <section className="py-16 px-4">
+    <section className="py-20 px-4" style={{ backgroundColor: '#fdfbf7' }}>
       <div className="max-w-4xl mx-auto">
+        {/* Section header with decorative divider */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-8"
+          className="text-center mb-12"
+        >
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <div className="h-px w-12 bg-premium-elegantGold/40" />
+            <div className="w-1.5 h-1.5 rounded-full bg-premium-elegantGold" />
+            <div className="h-px w-12 bg-premium-elegantGold/40" />
+          </div>
+          <h2 
+            className="text-xl tracking-widest uppercase font-light"
+            style={{
+              fontFamily: '"Plus Jakarta Sans", sans-serif',
+              color: '#8b7355',
+              letterSpacing: '0.3em'
+            }}
+          >
+            {t('days')} {t('hours')} {t('minutes')} {t('seconds')}
+          </h2>
+        </motion.div>
+
+        {/* Card-style countdown boxes */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6"
         >
           {timeUnits.map((unit, index) => (
             <motion.div
@@ -60,14 +86,42 @@ const CountdownTimer = ({ targetDate }) => {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="glass-card p-6 sm:p-8 text-center rounded-2xl"
+              className="relative p-6 sm:p-8 text-center rounded-2xl"
+              style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                backdropFilter: 'blur(10px)',
+                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+                border: '1px solid rgba(201, 162, 39, 0.15)'
+              }}
             >
-              <div className="text-4xl sm:text-5xl md:text-6xl font-serif font-bold text-luxury-gold-400 mb-2">
+              {/* Number */}
+              <div 
+                className="text-4xl sm:text-5xl md:text-6xl font-bold mb-2"
+                style={{
+                  fontFamily: '"Playfair Display", serif',
+                  color: '#4a4a4a'
+                }}
+              >
                 {String(unit.value).padStart(2, '0')}
               </div>
-              <div className="text-sm sm:text-base text-luxury-champagne/70">
+              
+              {/* Label */}
+              <div 
+                className="text-xs sm:text-sm tracking-widest uppercase font-light"
+                style={{
+                  fontFamily: '"Plus Jakarta Sans", sans-serif',
+                  color: '#8b7355',
+                  letterSpacing: '0.2em'
+                }}
+              >
                 {unit.label}
               </div>
+
+              {/* Decorative corner */}
+              <div 
+                className="absolute top-2 right-2 w-1 h-1 rounded-full"
+                style={{ backgroundColor: '#c9a227' }}
+              />
             </motion.div>
           ))}
         </motion.div>

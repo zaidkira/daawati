@@ -37,11 +37,35 @@ export default {
             900: '#42151a',
           },
         },
+        premium: {
+          sage: {
+            100: '#e8ede4',
+            200: '#d4dbd0',
+            300: '#c0c9bb',
+            400: '#a8b7a0',
+            500: '#8b9d7f',
+          },
+          cream: {
+            100: '#fdfbf7',
+            200: '#f5f0e8',
+            300: '#e8e0d5',
+          },
+          blush: {
+            100: '#fce4ec',
+            200: '#f8bbd9',
+            300: '#f48fb1',
+          },
+          terracotta: '#c9a227',
+          warmBrown: '#8b7355',
+          elegantGold: '#c9a227',
+        },
       },
       fontFamily: {
         serif: ['"Playfair Display"', 'Georgia', 'serif'],
         sans: ['"Plus Jakarta Sans"', 'Inter', 'sans-serif'],
         arabic: ['"Amiri"', '"Cairo"', '"Tajawal"', 'serif'],
+        script: ['"Alex Brush"', '"Great Vibes"', 'cursive'],
+        elegant: ['"Playfair Display"', 'Georgia', 'serif'],
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

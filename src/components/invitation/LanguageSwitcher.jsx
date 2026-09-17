@@ -1,6 +1,6 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Languages } from 'lucide-react'
+import { Globe } from 'lucide-react'
 import { useLanguage } from '../../contexts/LanguageContext'
 
 const LanguageSwitcher = ({ languagePair = 'ar-fr' }) => {
@@ -16,32 +16,33 @@ const LanguageSwitcher = ({ languagePair = 'ar-fr' }) => {
         { code: 'en', label: 'English', flag: '🇬🇧' }
       ]
 
+  const currentLang = availableLanguages.find(lang => lang.code === language) || availableLanguages[0]
+
   return (
-    <motion.div
+    <motion.button
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="fixed top-4 right-4 z-40"
+      transition={{ duration: 0.8, delay: 0.5 }}
+      className="fixed top-6 right-6 z-40 px-4 py-2 rounded-full flex items-center gap-2 transition-all hover:scale-105"
+      style={{
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        backdropFilter: 'blur(12px)',
+        border: '1px solid rgba(201, 162, 39, 0.3)',
+        color: '#8b7355',
+        fontFamily: '"Plus Jakarta Sans", sans-serif',
+        fontSize: '0.875rem',
+        fontWeight: '500',
+        boxShadow: '0 4px 15px rgba(0, 0, 0, 0.08)'
+      }}
+      onClick={() => {
+        const currentIndex = availableLanguages.findIndex(lang => lang.code === language)
+        const nextIndex = (currentIndex + 1) % availableLanguages.length
+        changeLanguage(availableLanguages[nextIndex].code)
+      }}
     >
-      <div className="flex items-center gap-2">
-        <Languages className="w-5 h-5 text-luxury-gold-400" />
-        <div className="flex gap-2">
-          {availableLanguages.map((lang) => (
-            <button
-              key={lang.code}
-              onClick={() => changeLanguage(lang.code)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                language === lang.code
-                  ? 'bg-luxury-gold-500 text-luxury-obsidian'
-                  : 'bg-white/10 text-luxury-champagne hover:bg-white/20'
-              }`}
-            >
-              <span className="mr-2">{lang.flag}</span>
-              {lang.label}
-            </button>
-          ))}
-        </div>
-      </div>
-    </motion.div>
+      <Globe className="w-4 h-4" />
+      <span>{currentLang.flag} {currentLang.label}</span>
+    </motion.button>
   )
 }
 

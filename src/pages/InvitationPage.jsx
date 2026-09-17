@@ -12,6 +12,7 @@ import RSVPForm from '../components/invitation/RSVPForm'
 import FAQSection from '../components/invitation/FAQSection'
 import SharingSection from '../components/invitation/SharingSection'
 import LanguageSwitcher from '../components/invitation/LanguageSwitcher'
+import DecorativeDivider from '../components/invitation/DecorativeDivider'
 import HostDashboard from '../components/invitation/HostDashboard'
 import { sampleInvitation } from '../data/invitationData'
 
@@ -43,7 +44,7 @@ const InvitationPageContent = ({ invitationSlug }) => {
   }
 
   return (
-    <div className="min-h-screen bg-luxury-obsidian">
+    <div className="min-h-screen" style={{ backgroundColor: '#fdfbf7' }}>
       <OpeningAnimation onOpen={handleOpen} invitation={invitation} />
       
       <AnimatePresence mode="wait">
@@ -60,15 +61,27 @@ const InvitationPageContent = ({ invitationSlug }) => {
               onScrollToRSVP={scrollToRSVP}
             />
             
+            <DecorativeDivider icon="💍" className="py-8" />
+            
             <CountdownTimer targetDate={invitation.date} />
+            
+            <DecorativeDivider icon="❤️" className="py-8" />
             
             <StoryTimeline story={invitation.story} />
             
+            <DecorativeDivider icon="📅" className="py-8" />
+            
             <EventProgram program={invitation.program} />
+            
+            <DecorativeDivider icon="📍" className="py-8" />
             
             <VenueDetails venue={invitation.venue} date={invitation.date} />
             
+            <DecorativeDivider icon="👗" className="py-8" />
+            
             <DressCode dressCode={invitation.dressCode} />
+            
+            <DecorativeDivider icon="✉️" className="py-8" />
             
             <div ref={rsvpRef}>
               <RSVPForm 
@@ -77,7 +90,11 @@ const InvitationPageContent = ({ invitationSlug }) => {
               />
             </div>
             
+            <DecorativeDivider icon="❓" className="py-8" />
+            
             <FAQSection faq={invitation.faq} />
+            
+            <DecorativeDivider icon="🔗" className="py-8" />
             
             <SharingSection invitationSlug={invitationSlug} />
             

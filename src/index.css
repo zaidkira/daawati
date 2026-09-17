@@ -54,6 +54,48 @@
   }
 }
 
+/* Custom animations for premium effects */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,255,255,0.3), inset 0 -2px 4px rgba(0,0,0,0.2);
+  }
+  50% {
+    box-shadow: 0 8px 40px rgba(201, 162, 39, 0.4), inset 0 2px 4px rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.2);
+  }
+}
+
+@keyframes fade-pulse {
+  0%, 100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+}
+
+/* Premium color palette */
+:root {
+  --sage-100: #e8ede4;
+  --sage-200: #d4dbd0;
+  --sage-300: #c0c9bb;
+  --cream-100: #fdfbf7;
+  --cream-200: #f5f0e8;
+  --blush-100: #fce4ec;
+  --blush-200: #f8bbd9;
+  --terracotta: #c9a227;
+  --warm-brown: #8b7355;
+  --elegant-gold: #c9a227;
+}
+
 /* Template System Variables */
 .invitation-template {
   --primary-color: #c99c2c;
