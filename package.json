@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "npx vite",
-    "build": "npx vite build",
+    "build": "npm install && npx vite build",
     "preview": "npx vite preview",
     "start": "npx vite preview --host 0.0.0.0 --port 3000"
   },
