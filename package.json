@@ -14,7 +14,6 @@
     "@supabase/supabase-js": "^2.116.0",
     "@vitejs/plugin-react": "^4.0.0",
     "autoprefixer": "^10.6.1",
-    "express": "^5.2.1",
     "framer-motion": "^13.4.0",
     "lucide-react": "^1.46.0",
     "postcss": "^8.5.28",
